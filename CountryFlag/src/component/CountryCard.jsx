@@ -8,8 +8,8 @@ function CountryCard() {
     try {
       let res = await axios.get(APIURL);
       setFetchCard(res.data);
-    } catch (err) {
-      console.log(err.message);
+    } catch (error) {
+      console.error("Somthing went wrong", error.message);
     }
   };
   useEffect(() => {
