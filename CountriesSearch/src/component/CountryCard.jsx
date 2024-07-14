@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
+  Container,
   countryCard,
-  mainCardHolderContainer,
   Searchdiv,
   SearchInput,
 } from "./CountryCard-Style";
@@ -15,45 +15,68 @@ function CountryCard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  //fetching card data from api
+  // Custom debounce hook
+  const useDebounce = (value, delay) => {
+    const [debounceValue, setDebounceValue] = useState(value);
+
+    useEffect(() => {
+      const handler = setTimeout(() => {
+        setDebounceValue(value);
+      }, delay);
+
+      return () => {
+        clearTimeout(handler);
+      };
+    }, [value, delay]);
+
+    return debounceValue;
+  };
+
+  // Debounced search input value
+  const debounceSearchValue = useDebounce(searchInputValue, 1000); // Debounce time set to 1 second (1000 milliseconds)
+
+  // Fetching card data from API
   useEffect(() => {
     const fetchCountryFlag = async () => {
       const APIURL = "https://xcountries-backend.azurewebsites.net/all";
       try {
         setLoading(true);
-        let res = await axios.get(APIURL);
+        const res = await axios.get(APIURL);
         setFetchCard(res.data);
         setFilterData(res.data);
         setLoading(false);
       } catch (error) {
         console.error(`Error fetching data: ${error.message}`);
-        console.log(error);
         setError(error);
         setLoading(false);
       }
     };
+
     fetchCountryFlag();
   }, []);
 
-  //Searchfuntionality
+  // Apply filter when debounce search value changes
   useEffect(() => {
-    setFilterData(
-      fetchCard.filter((ele) =>
-        ele.name.toLowerCase().includes(searchInputValue.toLowerCase())
-      )
-    );
-  }, [searchInputValue, fetchCard]);
+    if (debounceSearchValue) {
+      const filteredCountries = fetchCard.filter((country) =>
+        country.name.toLowerCase().includes(debounceSearchValue.toLowerCase())
+      );
+      setFilterData(filteredCountries);
+    } else {
+      setFilterData(fetchCard);
+    }
+  }, [debounceSearchValue, fetchCard]);
 
   const handleInputValue = (e) => {
-    e.preventDefault();
     setSearchInputValue(e.target.value);
   };
 
-  if (error) {
-    return <div>{error}</div>;
-  }
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
   }
 
   return (
@@ -67,17 +90,16 @@ function CountryCard() {
           value={searchInputValue}
         />
       </div>
-      <div style={mainCardHolderContainer}>
+      <div style={Container}>
         {filterData.length > 0 ? (
           filterData.map((item, ind) => (
-            // eslint-disable-next-line react/jsx-key
             <div key={ind} style={countryCard}>
               <img src={item.flag} alt={item.name} />
-              <h2>{item.name} </h2>
+              <h2>{item.name}</h2>
             </div>
           ))
         ) : (
-          <div>No Result found</div>
+          <div>No Results Found</div>
         )}
       </div>
     </>

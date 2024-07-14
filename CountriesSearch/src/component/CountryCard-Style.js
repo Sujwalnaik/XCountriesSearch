@@ -1,4 +1,8 @@
-export const mainCardHolderContainer = { display: "flex", flexWrap: "wrap" };
+export const Container = {
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "center",
+};
 
 export const countryCard = {
   display: "flex",
