@@ -38,10 +38,11 @@ function CountryCard() {
   // Fetching card data from API
   useEffect(() => {
     const fetchCountryFlag = async () => {
-      const APIURL = "https://xcountries-backend.azurewebsites.net/all";
+      const APIURL = "https://restcountries.com/v3.1/all";
       try {
         setLoading(true);
         const res = await axios.get(APIURL);
+        // console.log("res======", res.data);
         setFetchCard(res.data);
         setFilterData(res.data);
         setLoading(false);
@@ -55,11 +56,14 @@ function CountryCard() {
     fetchCountryFlag();
   }, []);
 
+  // console.log("fetchCard--------------", fetchCard);
   // Apply filter when debounce search value changes
   useEffect(() => {
     if (debounceSearchValue) {
       const filteredCountries = fetchCard.filter((country) =>
-        country.name.toLowerCase().includes(debounceSearchValue.toLowerCase())
+        country.name.common
+          .toLowerCase()
+          .includes(debounceSearchValue.toLowerCase())
       );
       setFilterData(filteredCountries);
     } else {
@@ -94,8 +98,8 @@ function CountryCard() {
         {filterData.length > 0 ? (
           filterData.map((item, ind) => (
             <div key={ind} style={countryCard}>
-              <img src={item.flag} alt={item.name} />
-              <h2>{item.name}</h2>
+              <img src={item.flags.png} alt={item.name} />
+              <h2>{item.name.common}</h2>
             </div>
           ))
         ) : (
