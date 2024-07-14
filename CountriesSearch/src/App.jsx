@@ -4,7 +4,6 @@ import CountryCard from "./component/CountryCard";
 function App() {
   return (
     <>
-      Country flag
       <CountryCard />
     </>
   );
