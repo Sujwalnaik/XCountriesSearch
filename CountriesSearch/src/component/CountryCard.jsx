@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Container,
-  countryCard,
+  // countryCard,
   Searchdiv,
   SearchInput,
 } from "./CountryCard-Style";
+import "./style.css";
 
 function CountryCard() {
   const [fetchCard, setFetchCard] = useState([]);
@@ -97,7 +98,7 @@ function CountryCard() {
       <div style={Container}>
         {filterData.length > 0 ? (
           filterData.map((item, ind) => (
-            <div key={ind} style={countryCard}>
+            <div key={ind} className="countryCard">
               <img src={item.flags.png} alt={item.name} />
               <h2>{item.name.common}</h2>
             </div>
