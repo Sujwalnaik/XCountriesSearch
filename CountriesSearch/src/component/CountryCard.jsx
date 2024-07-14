@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Container,
@@ -33,7 +33,7 @@ function CountryCard() {
   };
 
   // Debounced search input value
-  const debounceSearchValue = useDebounce(searchInputValue, 1000); // Debounce time set to 1 second (1000 milliseconds)
+  const debounceSearchValue = useDebounce(searchInputValue, 0); // Debounce time set to 1 second (1000 milliseconds)
 
   // Fetching card data from API
   useEffect(() => {
